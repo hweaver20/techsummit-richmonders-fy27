@@ -1,0 +1,19 @@
+Dev Branch Names:
+  Lakebase: projects/northpeak/branches/dev
+  Git: dev/lakebase-northpeak
+  Dev Endpoint: ep-calm-band-d2zksq6c.database.us-east-1.cloud.databricks.com
+
+Changes done on dev branch:
+1. Created northpeak_app.product_substitutes table (DDL + seed data)
+   - Maps products to their substitutes with type (equivalent/upgrade/downgrade/similar)
+   - Seeded with SKU-APP-04412 (Summit Down Parka) substitutes:
+     * SKU-APP-04418 (Ridgeline Insulated Jacket) - similar, 0.85 confidence
+     * SKU-APP-04431 (Timberline Fleece Hoodie) - downgrade, 0.60 confidence
+   - Build 2 will use this for the "substitute" recovery option
+
+2. Validated with smoke query joining product_substitutes -> synced_products
+   - Query returned correct substitutes for SKU-APP-04412
+
+3. Promoted to production branch after validation passed
+
+Branch kept alive (no_expiry=True) for Build 2.

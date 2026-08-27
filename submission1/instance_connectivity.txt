@@ -1,0 +1,9 @@
+Project: northpeak (Display: NorthPeak Retail)
+Host: ep-little-union-d20vlyjv.database.us-east-1.cloud.databricks.com
+Branch: production
+Database: databricks_postgres
+PG Version: 17
+
+Connectivity Check:
+SELECT version();
+=> PostgreSQL 17.11 (32e7196) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, 64-bit

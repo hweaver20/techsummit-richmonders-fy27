@@ -1,0 +1,7 @@
+[
+  {"store_id":"STORE-0003","store_name":"NorthPeak Minneapolis #0003","city":"Minneapolis","state":"MN","product_id":"SKU-APP-04412","product_name":"Summit Down Parka","on_hand_units":0,"on_order_units":3},
+  {"store_id":"STORE-0006","store_name":"NorthPeak Denver #0006","city":"Denver","state":"CO","product_id":"SKU-APP-04412","product_name":"Summit Down Parka","on_hand_units":0,"on_order_units":4},
+  {"store_id":"STORE-0011","store_name":"NorthPeak Milwaukee #0011","city":"Milwaukee","state":"WI","product_id":"SKU-APP-04412","product_name":"Summit Down Parka","on_hand_units":0,"on_order_units":4},
+  {"store_id":"STORE-0013","store_name":"NorthPeak Boston #0013","city":"Boston","state":"MA","product_id":"SKU-APP-04412","product_name":"Summit Down Parka","on_hand_units":0,"on_order_units":8},
+  {"store_id":"STORE-0214","store_name":"NorthPeak Denver #0214","city":"Denver","state":"CO","product_id":"SKU-APP-04412","product_name":"Summit Down Parka","on_hand_units":0,"on_order_units":6}
+]

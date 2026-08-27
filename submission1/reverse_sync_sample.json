@@ -1,0 +1,46 @@
+{
+  "description": "SCD Type 2 history from Lakebase CDF (northpeak_cdf_catalog.cdf_history.lb_transfer_actions_history)",
+  "system_metadata_columns": ["_pg_change_type", "_pg_lsn", "_pg_xid", "_timestamp", "_sort_by"],
+  "row_versions": [
+    {
+      "_pg_change_type": "insert",
+      "_timestamp": "2026-08-27T19:23:49.814707",
+      "_pg_lsn": 77343864,
+      "action_id": "36c97ead-ce17-416f-aeb6-2fc9c79ac74b",
+      "source_store_id": "STORE-0018",
+      "destination_store_id": "STORE-0214",
+      "product_id": "SKU-APP-04412",
+      "units_requested": 40,
+      "units_approved": null,
+      "status": "proposed",
+      "approved_by": null,
+      "reason": "Additional transfer: Houston Store 18 has 979 surplus units of Summit Down Parka for Denver Store 214"
+    },
+    {
+      "_pg_change_type": "update_preimage",
+      "_timestamp": "2026-08-27T19:23:58.893196",
+      "_pg_lsn": 77345024,
+      "action_id": "36c97ead-ce17-416f-aeb6-2fc9c79ac74b",
+      "source_store_id": "STORE-0018",
+      "destination_store_id": "STORE-0214",
+      "product_id": "SKU-APP-04412",
+      "units_requested": 40,
+      "units_approved": null,
+      "status": "proposed",
+      "approved_by": null
+    },
+    {
+      "_pg_change_type": "update_postimage",
+      "_timestamp": "2026-08-27T19:23:58.893214",
+      "_pg_lsn": 77345024,
+      "action_id": "36c97ead-ce17-416f-aeb6-2fc9c79ac74b",
+      "source_store_id": "STORE-0018",
+      "destination_store_id": "STORE-0214",
+      "product_id": "SKU-APP-04412",
+      "units_requested": 40,
+      "units_approved": 40,
+      "status": "approved",
+      "approved_by": "regional_manager_west"
+    }
+  ]
+}
