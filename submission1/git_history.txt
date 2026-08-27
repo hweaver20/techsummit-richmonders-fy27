@@ -1,6 +1,12 @@
-* 5ef594f (HEAD -> main, origin/main) psuh
-*   d14695a Merge dev/lakebase-northpeak: Build 1 complete
+*   404c5d0 (HEAD -> main) Merge dev/lakebase-northpeak: promote validated Build 1 layers
 |\  
-| * bf7e2cd (dev/lakebase-northpeak) feat: Build 1 Lakebase operational data layer
+| * b2c8a60 (dev/lakebase-northpeak) feat(validate): promotion evidence and submission artifacts
+| * c07a3ce feat(search): enable Lakebase Search with hybrid vector + full-text
+| * bdce60c feat(infra): verify scale-to-zero on idle branches
+| * 82ce81b feat(schema): create operational schema with related tables and keys
+* | 5ef594f (origin/main) psuh
+* | d14695a Merge dev/lakebase-northpeak: Build 1 complete
+|\| 
+| * bf7e2cd feat: Build 1 Lakebase operational data layer
 |/  
 * f8a9c78 initial load
