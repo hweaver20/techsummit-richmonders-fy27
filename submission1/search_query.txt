@@ -1,0 +1,11 @@
+Natural Language Query: "warm winter parka insulated cold weather"
+
+SQL (Lakebase Search - BM25 full-text via lakebase_text extension):
+SELECT product_id, product_name, category, description,
+       search_vector <@> to_bm25query(to_tsvector('english', 'warm winter parka insulated cold weather'), 'northpeak_app.idx_product_search_bm25') AS relevance_score
+FROM northpeak_app.product_search
+ORDER BY relevance_score
+LIMIT 5;
+
+Extensions enabled: lakebase_vector (CASCADE includes pgvector), lakebase_text
+Index: idx_product_search_bm25 USING lakebase_bm25 on northpeak_app.product_search(search_vector)
