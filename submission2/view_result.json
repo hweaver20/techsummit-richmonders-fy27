@@ -1,0 +1,44 @@
+[
+  {
+    "store_id": "STORE-0214",
+    "store_name": "NorthPeak Denver #0214",
+    "city": "Denver",
+    "region": "West",
+    "product_id": "SKU-APP-04412",
+    "product_name": "Summit Down Parka",
+    "on_hand_units": 0,
+    "on_order_units": 6,
+    "lost_sales_exposure_usd": 17430,
+    "days_of_cover": 0.0,
+    "position_status": "stockout",
+    "recovery_status": "committed"
+  },
+  {
+    "store_id": "STORE-0214",
+    "store_name": "NorthPeak Denver #0214",
+    "city": "Denver",
+    "region": "West",
+    "product_id": "SKU-APP-04418",
+    "product_name": "Ridgeline Insulated Jacket",
+    "on_hand_units": 0,
+    "on_order_units": 4,
+    "lost_sales_exposure_usd": 13230,
+    "days_of_cover": 0.0,
+    "position_status": "stockout",
+    "recovery_status": "none"
+  },
+  {
+    "store_id": "STORE-0214",
+    "store_name": "NorthPeak Denver #0214",
+    "city": "Denver",
+    "region": "West",
+    "product_id": "SKU-APP-04431",
+    "product_name": "Timberline Fleece Hoodie",
+    "on_hand_units": 0,
+    "on_order_units": 2,
+    "lost_sales_exposure_usd": 5530,
+    "days_of_cover": 0.0,
+    "position_status": "stockout",
+    "recovery_status": "none"
+  }
+]

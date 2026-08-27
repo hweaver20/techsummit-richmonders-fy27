@@ -1,0 +1,54 @@
+# Hero Question: "Store 214 is short on a top product. What is the best recovery move?"
+
+## Decision Chain — Linked Record IDs
+
+The hero question is walked end-to-end. Every hop is traceable:
+
+1. FLAGGED VIEW ROW
+   - Store: STORE-0214 (NorthPeak Denver #0214)
+   - Product: SKU-APP-04412 (Summit Down Parka, $249)
+   - Position: stockout (0 units, 21 days)
+   - Exposure: $17,430 lost sales
+   - View trigger event: 882f7742-ab2a-44d2-9faf-57633c0ef0dc
+
+2. ASSISTANT EXPLANATION
+   - Session: 07228ff2
+   - Log entry: log-001 (request_type=explanation)
+   - Grounded in: 7 days inventory history, surplus stores, substitutes
+   - Finding: Sold out Aug 6, velocity ~5/day, nearest surplus STORE-0377 (833 units, 100km)
+
+3. WHAT-IF ANALYSIS
+   - Session: 07228ff2
+   - Log entry: log-002 (request_type=what_if)
+   - Scenario: "Transfer 60 units from STORE-0377"
+   - Result: Cost $120, 12 days cover, $14,820 net value — best of 3 options
+
+4. DRAFTED MEMO
+   - Session: 07228ff2
+   - Log entry: log-003 (request_type=draft_memo)
+   - Content: Transfer request memo, ML-ranked #1
+
+5. PROPOSED ACTION
+   - Action ID: e617ee9d-0c79-4d3c-9bc8-13d113c6810e
+   - Workflow event: f24b632e-82c5-485c-a5d9-3a8d3d078328
+   - Move: transfer, 60 units, STORE-0377 → STORE-0214
+   - Predicted recaptured: $11,940
+   - Created: 2026-08-27T21:07:31.965539+00:00
+
+6. APPROVAL
+   - Action ID: e617ee9d-0c79-4d3c-9bc8-13d113c6810e
+   - Approver: dana.ruiz@northpeak.com
+   - Approved: 2026-08-27T21:07:31.987848+00:00
+   - Workflow event: action_approved
+
+7. COMMIT → UPDATED VIEW
+   - Action ID: e617ee9d-0c79-4d3c-9bc8-13d113c6810e
+   - Committed: 2026-08-27T21:07:32.000964+00:00
+   - Workflow event: action_committed
+   - View now shows: recovery_status = "committed" for STORE-0214 × SKU-APP-04412
+
+## Cross-Reference Verification
+- Action ID e617ee9d-0c79-4d3c-9bc8-13d113c6810e appears in: writeback_table.json, state_table.json, hero_question.txt
+- Session 07228ff2 appears in: assist_log.jsonl, state_table.json, hero_question.txt
+- STORE-0214 × SKU-APP-04412 appears in: view_result.json, writeback_table.json, assist_log.jsonl, state_table.json
+- Trigger event 882f7742 appears in: state_table.json, hero_question.txt

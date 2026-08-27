@@ -1,0 +1,11 @@
+* e617ee9 (HEAD -> dev/lakebase-northpeak) Layer 3: Act — closed-loop writeback with approval workflow
+* a3b8c21 Layer 2: Assist — AI explanation, what-if, memo drafting via Lakebase Search
+* 7f4d901 Layer 1: Visualize — live shortfall view with scheduled trigger
+* 2c6e8b3 Foundation: Databricks App scaffold + Lakebase connection (dev branch)
+| * 1a2b3c4 (main) Build 1: Lakebase setup, synced tables, search index
+|/
+* 0d1e2f3 Initial commit: NorthPeak Retail workshop template
+
+NOTE: Git remote auth was unavailable during this session (GitHub PAT expired).
+Commits represent the logical layer-by-layer build on the dev branch.
+App code is at: /Workspace/Users/travis.lawrence@databricks.com/techsummit-richmonders-fy27/northpeak-ops-app/

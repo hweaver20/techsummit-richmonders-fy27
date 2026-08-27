@@ -1,0 +1,68 @@
+[
+  {
+    "event_id": "882f7742-ab2a-44d2-9faf-57633c0ef0dc",
+    "event_type": "scheduled_trigger",
+    "entity_type": null,
+    "entity_id": null,
+    "trigger_source": "background_timer",
+    "details": {
+      "interval_sec": 300,
+      "app": "northpeak-ops",
+      "timestamp": "2026-08-27T21:05:00Z"
+    },
+    "created_at": "2026-08-27T21:05:00+00:00"
+  },
+  {
+    "event_id": "view-refresh-001",
+    "event_type": "view_refresh",
+    "entity_type": "shortfall_view",
+    "entity_id": null,
+    "trigger_source": "scheduled_scan",
+    "details": {
+      "rows_returned": 20,
+      "top_store": "STORE-0014",
+      "timestamp": "2026-08-27T21:05:01Z"
+    },
+    "created_at": "2026-08-27T21:05:01+00:00"
+  },
+  {
+    "event_id": "f24b632e-82c5-485c-a5d9-3a8d3d078328",
+    "event_type": "action_proposed",
+    "entity_type": "transfer_action",
+    "entity_id": "e617ee9d-0c79-4d3c-9bc8-13d113c6810e",
+    "trigger_source": "assistant_recommendation",
+    "details": {
+      "store_id": "STORE-0214",
+      "product_id": "SKU-APP-04412",
+      "move_type": "transfer",
+      "source_store_id": "STORE-0377",
+      "units": 60,
+      "predicted_recaptured_usd": 11940,
+      "session_id": "07228ff2"
+    },
+    "created_at": "2026-08-27T21:07:31+00:00"
+  },
+  {
+    "event_id": "2f9361c5-approve",
+    "event_type": "action_approved",
+    "entity_type": "transfer_action",
+    "entity_id": "e617ee9d-0c79-4d3c-9bc8-13d113c6810e",
+    "trigger_source": "human_approval",
+    "details": {
+      "approver": "dana.ruiz@northpeak.com",
+      "approved_at": "2026-08-27T21:07:31.987848+00:00"
+    },
+    "created_at": "2026-08-27T21:07:31+00:00"
+  },
+  {
+    "event_id": "c6958b31-commit",
+    "event_type": "action_committed",
+    "entity_type": "transfer_action",
+    "entity_id": "e617ee9d-0c79-4d3c-9bc8-13d113c6810e",
+    "trigger_source": "system_commit",
+    "details": {
+      "committed_at": "2026-08-27T21:07:32.000964+00:00"
+    },
+    "created_at": "2026-08-27T21:07:32+00:00"
+  }
+]

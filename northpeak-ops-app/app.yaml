@@ -1,0 +1,25 @@
+command: ['bash', '-c', 'pip install -r requirements.txt && python app.py']
+
+env:
+  - name: LAKEBASE_HOST
+    value: "ep-calm-band-d2zksq6c.database.us-east-1.cloud.databricks.com"
+  - name: LAKEBASE_DB
+    value: "databricks_postgres"
+  - name: LAKEBASE_PROJECT
+    value: "northpeak"
+  - name: LAKEBASE_BRANCH
+    value: "dev"
+  - name: LLM_ENDPOINT
+    value: "databricks-gpt-5-6-luna"  # Governed via Unity AI Gateway (build3-app-llm also available)
+
+resources:
+  - name: postgres
+    postgres:
+      project: northpeak
+      branch: dev
+      database: databricks_postgres
+      permission: CAN_CONNECT_AND_CREATE
+  - name: serving-endpoint
+    serving_endpoint:
+      name: databricks-gpt-5-6-luna
+      permission: CAN_QUERY
