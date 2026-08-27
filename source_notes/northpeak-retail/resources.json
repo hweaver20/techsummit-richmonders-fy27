@@ -1,0 +1,25 @@
+{
+  "short_description": "NorthPeak Retail \u2014 an omnichannel retailer's stockout-and-markdown rescue. A cold snap left cold-weather apparel sold out in the North while the same styles pile toward markdown in the South. A store-ops app reads governed inventory at low latency, a recovery recommendation ranks the move (transfer / expedite / substitute) per shortfall, and a store manager approves \u2014 turning governed lakehouse data into a store-floor action, with the assistant's AI spend bounded and observable.",
+  "capabilities": {
+    "buildable": [
+      "synthetic-data-gen",
+      "sdp",
+      "metric-views",
+      "aibi-dashboards",
+      "genie",
+      "databricks-apps",
+      "lakebase"
+    ],
+    "optional": [
+      "ml-training-serving"
+    ],
+    "talking_track": [
+      "lakeflow-connect",
+      "unity-catalog",
+      "ai-gateway",
+      "genie-one",
+      "genie-code"
+    ]
+  },
+  "created_resources": {}
+}

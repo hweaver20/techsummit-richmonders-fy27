@@ -1,0 +1,84 @@
+# Databricks Asset Bundle — Workshop: NorthPeak Retail (Stockout & Markdown Rescue).
+#
+# WORKSHOP TEMPLATE — this bundle does the MINIMUM so a trainee can start the
+# AI Customer Challenge: it stands up the schema + a raw-data Volume and a job
+# that generates the synthetic dataset. It deliberately does NOT build the
+# pipeline, metric view, model, dashboard, Lakebase, or the app — those are the
+# graded milestones the trainee builds (see README.md → "What YOU need to
+# create" and app/APP_WORKSHOP.md).
+#
+#   1. `databricks bundle deploy`                → schema + raw_data volume + setup job
+#   2. `databricks bundle run northpeak_setup`   → generates the synthetic raw data
+#   Then follow README.md: build Milestone 1 (Lakebase) → 2 (App) → 3 (AI Gateway),
+#   using Genie Code against the specs in specifications/.
+#
+# The README + specifications/ + data_generation/ + app/ come with the forked
+# template folder (that's what the trainee reads + builds from with Genie Code);
+# this bundle only provisions the workspace resources needed to get data flowing.
+# Deploy is documented in README.md — do NOT run it as part of authoring.
+bundle:
+  name: workshop-northpeak-retail
+
+# Put the deployed materials in an obvious, browsable workspace folder instead
+# of the CLI default (~/.bundle/<name>/<target> — a hidden dotfolder). The
+# trainee reads README.md + specifications/ + data_generation/ here, so it must
+# NOT be buried. (The CLI still nests /files, /state, /artifacts under this
+# root — that layer isn't configurable — so the source lands under
+# <root_path>/files/.)
+workspace:
+  root_path: /Workspace/Users/${workspace.current_user.userName}/northpeak-retail-workshop
+
+variables:
+  catalog:
+    description: Unity Catalog for the workshop data (must already exist / you can create it).
+    default: dbdemos_templates
+  schema:
+    description: Schema for the demo tables + the raw_data volume (created by this bundle).
+    default: northpeak_retail
+
+resources:
+  schemas:
+    demo_schema:
+      catalog_name: ${var.catalog}
+      name: ${var.schema}
+      comment: "Workshop — NorthPeak Retail stockout/markdown rescue: synthetic store-ops data."
+
+  volumes:
+    raw_data:
+      catalog_name: ${var.catalog}
+      schema_name: ${resources.schemas.demo_schema.name}
+      name: raw_data
+      volume_type: MANAGED
+      comment: "Raw parquet landing zone — generate_data.py writes here; the SDP silver you build reads it via read_files()."
+
+  jobs:
+    northpeak_setup:
+      name: "[Workshop] NorthPeak Retail — generate data"
+      description: "Generates the synthetic raw_* parquet datasets into the raw_data volume. Run this once after deploy, then build the pipeline/Lakebase/app/gateway yourself."
+      tasks:
+        - task_key: generate_data
+          # generate_data.py ships in notebook-source format (so it also reads
+          # cleanly in the workspace editor), so it's a notebook_task — it reads
+          # catalog/schema from widgets when run this way (and from --catalog/
+          # --schema argparse when run locally).
+          notebook_task:
+            notebook_path: ./data_generation/generate_data.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${resources.schemas.demo_schema.name}
+          environment_key: sdk_default
+      environments:
+        - environment_key: sdk_default
+          spec:
+            client: "4"
+            dependencies:
+              - numpy
+              - pandas
+              - faker
+
+targets:
+  dev:
+    mode: development
+    default: true
+  prod:
+    mode: production
