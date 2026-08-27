@@ -1,0 +1,86 @@
+# Databricks Asset Bundle — NorthPeak Retail: Lakebase Sync & Operational Layer
+#
+# Defines the sync pipeline as code (not UI-only):
+#   - Synced tables: UC → Lakebase (read-only operational serving)
+#   - Reverse sync (CDF): Postgres writable tables → UC Delta (SCD Type 2 history)
+#   - Lakebase project/branch infrastructure
+#
+# Deploy: `databricks bundle deploy --target prod`
+#
+# Co-authored-by: Genie Code <genie-code@databricks.com>
+
+bundle:
+  name: northpeak-lakebase-sync
+
+variables:
+  catalog:
+    description: Unity Catalog containing governed source tables
+    default: tech_summit_richmonders
+  schema:
+    description: Schema with the NorthPeak operational tables
+    default: northpeak
+  cdf_catalog:
+    description: Catalog with external storage for CDF reverse-sync history
+    default: northpeak_cdf_catalog
+  cdf_schema:
+    description: Schema for CDF history tables
+    default: cdf_history
+  lakebase_project:
+    description: Lakebase project name
+    default: northpeak
+
+resources:
+  # ---------- Forward Sync: UC → Lakebase (read-only serving) ----------
+  synced_tables:
+    synced_stores:
+      catalog_name: ${var.catalog}
+      schema_name: ${var.schema}
+      name: synced_stores
+      comment: "Synced table: UC raw_stores → Lakebase northpeak.synced_stores (400 stores)"
+      lakebase_project: ${var.lakebase_project}
+      lakebase_branch: production
+      scheduling_policy: TRIGGERED
+      source_table: ${var.catalog}.${var.schema}.raw_stores
+
+    synced_products:
+      catalog_name: ${var.catalog}
+      schema_name: ${var.schema}
+      name: synced_products
+      comment: "Synced table: UC raw_products → Lakebase northpeak.synced_products (2000 products, searchable description field)"
+      lakebase_project: ${var.lakebase_project}
+      lakebase_branch: production
+      scheduling_policy: TRIGGERED
+      source_table: ${var.catalog}.${var.schema}.raw_products
+
+    synced_inventory:
+      catalog_name: ${var.catalog}
+      schema_name: ${var.schema}
+      name: synced_inventory
+      comment: "Synced table: UC silver_inventory_dedup → Lakebase northpeak.synced_inventory (131K rows)"
+      lakebase_project: ${var.lakebase_project}
+      lakebase_branch: production
+      scheduling_policy: TRIGGERED
+      source_table: ${var.catalog}.${var.schema}.silver_inventory_dedup
+
+  # ---------- Reverse Sync: Lakebase → UC via CDF ----------
+  # CDF streams writable Postgres changes back to Delta as SCD Type 2 history.
+  # Configuration managed via SDK (see cdf_sync_definition.py):
+  #   Source: postgres schema 'northpeak_app' (transfer_actions, inventory_alerts)
+  #   Dest:   northpeak_cdf_catalog.cdf_history.lb_<table>_history
+  #   Columns: _pg_change_type, _pg_lsn, _pg_xid, _timestamp, _sort_by + all row data
+  cdf_config:
+    northpeak_app_cdf:
+      lakebase_project: ${var.lakebase_project}
+      lakebase_branch: production
+      lakebase_database: databricks-postgres
+      source_postgres_schema: northpeak_app
+      destination_catalog: ${var.cdf_catalog}
+      destination_schema: ${var.cdf_schema}
+      comment: "Reverse sync: northpeak_app.* → northpeak_cdf_catalog.cdf_history.lb_*_history (SCD Type 2)"
+
+targets:
+  prod:
+    mode: production
+    default: true
+  dev:
+    mode: development
