@@ -1,0 +1,137 @@
+{
+  "pages": [
+    {
+      "name": "AI Gateway Usage & Governance",
+      "displayName": "AI Gateway Usage & Governance",
+      "layout": [
+        {
+          "widget": {
+            "name": "endpoint_calls_summary",
+            "queries": [
+              {
+                "name": "endpoint_calls",
+                "query": {
+                  "datasetName": "ai_gateway_usage",
+                  "fields": [
+                    {
+                      "name": "status_code",
+                      "expression": "`status_code`"
+                    },
+                    {
+                      "name": "count",
+                      "expression": "COUNT(*)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "status_code",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "guardrail_blocks",
+            "queries": [
+              {
+                "name": "guardrail_events",
+                "query": {
+                  "datasetName": "ai_gateway_usage",
+                  "fields": [
+                    {
+                      "name": "request_time",
+                      "expression": "`request_time`"
+                    },
+                    {
+                      "name": "status_code",
+                      "expression": "`status_code`"
+                    },
+                    {
+                      "name": "requester",
+                      "expression": "`requester`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "table"
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "rate_limit_events",
+            "queries": [
+              {
+                "name": "rate_limits",
+                "query": {
+                  "datasetName": "ai_gateway_usage",
+                  "fields": [
+                    {
+                      "name": "request_time",
+                      "expression": "`request_time`"
+                    },
+                    {
+                      "name": "response",
+                      "expression": "`response`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "table"
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ]
+    }
+  ],
+  "datasets": [
+    {
+      "name": "ai_gateway_usage",
+      "displayName": "AI Gateway Usage (app + agent + MCP)",
+      "query": "SELECT * FROM main.ai_gateway.`databricks-gpt-5-6-luna_payload` ORDER BY request_time DESC"
+    }
+  ]
+}

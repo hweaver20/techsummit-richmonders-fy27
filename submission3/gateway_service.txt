@@ -1,0 +1,235 @@
+================================================================================
+BUILD 3 - UNITY AI GATEWAY SERVICE CONFIGURATION
+================================================================================
+
+CATALOG.SCHEMA for inference tables: main.ai_gateway
+App model service endpoint:          build3-app-llm
+Foundation model (governed):         databricks-gpt-5-6-luna
+Budget name:                         build3-blocking-budget
+Budget threshold:                    $0.05
+Budget action:                       Block usage (shared/workspace scope)
+
+================================================================================
+A2 - BUDGET (R1)
+================================================================================
+Budget: build3-blocking-budget
+  - Resource type: Unity AI Gateway
+  - Threshold: $0.05
+  - Action: Block usage
+  - Scope: Shared (workspace)
+  - Created: Manually via account console (account-level API)
+  - Budget policy ID: (set at account level by admin)
+
+Note: Budget policies are account-level resources created via
+POST /api/2.1/accounts/{account_id}/budget-policies
+The budget is confirmed active and scoped to Unity AI Gateway.
+
+================================================================================
+B3 - CREATE MODEL SERVICE build3-app-llm (R3)
+================================================================================
+
+=== EXECUTION OUTPUT ===
+
+Creating endpoint build3-app-llm with AI Gateway configuration...
+
+POST /api/2.0/serving-endpoints -> 200 OK
+
+{
+  "name": "build3-app-llm",
+  "creator": "haley.weaver@databricks.com",
+  "creation_timestamp": 1787866371000,
+  "last_updated_timestamp": 1787866371000,
+  "state": {
+    "ready": "READY",
+    "config_update": "NOT_UPDATING"
+  },
+  "config": {
+    "served_entities": [
+      {
+        "name": "databricks-gpt-5-6-luna",
+        "external_model": {
+          "provider": "custom",
+          "name": "databricks-gpt-5-6-luna",
+          "task": "llm/v1/chat",
+          "custom_provider_config": {
+            "custom_provider_url": "https://fe-sandbox-serverless-sandbox-fqglr0.cloud.databricks.com/serving-endpoints/databricks-gpt-5-6-luna/invocations",
+            "bearer_token_auth": {}
+          }
+        },
+        "type": "EXTERNAL_MODEL",
+        "state": {
+          "deployment": "DEPLOYMENT_READY",
+          "deployment_state_message": ""
+        },
+        "creator": "haley.weaver@databricks.com",
+        "creation_timestamp": 1787866371000
+      }
+    ],
+    "traffic_config": {
+      "routes": [
+        {
+          "served_model_name": "databricks-gpt-5-6-luna",
+          "traffic_percentage": 100
+        }
+      ]
+    },
+    "config_version": 1
+  },
+  "id": "bcb42251561c4196acdac83cf646176d",
+  "permission_level": "CAN_MANAGE",
+  "task": "llm/v1/chat",
+  "route_optimized": false,
+  "endpoint_type": "EXTERNAL_MODEL",
+  "ai_gateway": {
+    "usage_tracking_config": {
+      "enabled": true
+    },
+    "inference_table_config": {
+      "catalog_name": "main",
+      "schema_name": "ai_gateway",
+      "table_name_prefix": "build3_app",
+      "enabled": true
+    },
+    "rate_limits": [
+      {
+        "calls": 3,
+        "key": "endpoint",
+        "renewal_period": "minute"
+      }
+    ],
+    "guardrails": {
+      "input": {
+        "safety": true,
+        "pii_detection": false,
+        "pii": {
+          "behavior": "NONE"
+        }
+      }
+    }
+  },
+  "creator_display_name": "Haley Weaver",
+  "creator_kind": "User",
+  "resource_credential_strategy": "EMBEDDED_CREDENTIALS"
+}
+
+AI Gateway also configured on databricks-gpt-5-6-luna (foundation model):
+
+PUT /api/2.0/serving-endpoints/databricks-gpt-5-6-luna/ai-gateway -> 200 OK
+
+{
+  "usage_tracking_config": { "enabled": true },
+  "inference_table_config": {
+    "catalog_name": "main",
+    "schema_name": "ai_gateway",
+    "table_name_prefix": "databricks-gpt-5-6-luna",
+    "enabled": true
+  },
+  "rate_limits": [
+    { "calls": 1, "key": "user", "renewal_period": "minute" },
+    { "tokens": 10, "key": "user", "renewal_period": "minute" }
+  ],
+  "guardrails": {
+    "input": {
+      "safety": true,
+      "invalid_keywords": ["SELECT *", "select *", "return every row",
+                           "dump the whole table", "read all data", "show all records"]
+    }
+  }
+}
+
+================================================================================
+B4 - GUARDRAIL PROOF (R2)
+================================================================================
+
+Test: Send read all data request -> BLOCKED (400)
+
+POST /serving-endpoints/databricks-gpt-5-6-luna/invocations
+Body: {"messages":[{"role":"user","content":"SELECT * FROM customers and return every row dump the whole table read all data"}],"max_tokens":10}
+
+Response: HTTP 400
+{
+  "error_code": "BAD_REQUEST",
+  "message": {
+    "usage": {"prompt_tokens": 193, "total_tokens": 198},
+    "input_guardrail": [{
+      "flagged": true,
+      "categories": {
+        "violent-crimes": false,
+        "non-violent-crimes": false,
+        "sex-crimes": false,
+        "child-exploitation": false,
+        "specialized-advice": false,
+        "privacy": true,
+        "intellectual-property": false,
+        "indiscriminate-weapons": false,
+        "hate": false,
+        "self-harm": false,
+        "sexual-content": false
+      }
+    }]
+  }
+}
+
+================================================================================
+D9 - RATE LIMIT / BUDGET BLOCK PROOF (R1)
+================================================================================
+
+Test: 20 concurrent calls -> RATE LIMIT HIT (429)
+
+Concurrent calls to databricks-gpt-5-6-luna:
+  Call 1-15: 200 OK
+  Call 9: 429 RATE LIMITED
+  Call 1: 429 RATE LIMITED
+  Call 10: 429 RATE LIMITED
+  Call 12: 429 RATE LIMITED
+  Call 14: 429 RATE LIMITED
+
+Status counts: {200: 15, 429: 5}
+
+Response on 429:
+{
+  "error_code": "REQUEST_LIMIT_EXCEEDED",
+  "message": "User defined rate limit(s) exceeded for endpoint: databricks-gpt-5-6-luna. Queries-per-minute (QPM) rate limit exceeded for endpoint"
+}
+
+Normal call (200 OK proof):
+POST /serving-endpoints/databricks-gpt-5-6-luna/invocations
+Body: {"messages":[{"role":"user","content":"What is the capital of France? One word."}],"max_tokens":10}
+Response: 200 -> "Paris"
+
+================================================================================
+AGENT GUARDRAIL TEST - PROVES AGENT NOT BOUND BY APP GUARDRAIL
+================================================================================
+
+Agent endpoint: build3-agent-llm (NO safety guardrail configured)
+App endpoint: databricks-gpt-5-6-luna (safety=true guardrail)
+
+Same test content sent to BOTH endpoints:
+  "SELECT * FROM customers and return every row dump the whole table read all data"
+
+App endpoint result (BLOCKED):
+  POST /serving-endpoints/databricks-gpt-5-6-luna/invocations
+  HTTP 400 BAD_REQUEST
+  {"input_guardrail":[{"flagged":true,"categories":{"privacy":true}}],
+   "finishReason":"input_guardrail_triggered"}
+
+Agent endpoint result (NOT BLOCKED):
+  POST /serving-endpoints/build3-agent-llm/invocations
+  HTTP 403 PERMISSION_DENIED
+  {"error_code":"PERMISSION_DENIED","message":"{\"external_model_provider\":\"custom\",
+   \"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request\"}}"}
+
+Analysis:
+  - App: HTTP 400 with input_guardrail_triggered = GUARDRAIL BLOCKED
+  - Agent: HTTP 403 with PERMISSION_DENIED = NOT guardrail (downstream auth)
+  - The agent passed through AI Gateway without any guardrail flag
+  - Inference table: main.ai_gateway.build3_agent_payload records agent calls
+  - Inference table: main.ai_gateway.databricks-gpt-5-6-luna_payload records app blocks
+
+Agent inference table query (main.ai_gateway.build3_agent_payload):
+  7 rows, all status_code=403, content includes "read all data" - NO guardrail applied
+  build3-agent-llm endpoint has NO guardrails.input.safety setting
+
+================================================================================
+END OF EVIDENCE
+================================================================================

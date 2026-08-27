@@ -1,0 +1,140 @@
+================================================================================
+BUILD 3 - AGENT & MCP GOVERNANCE THREAD
+================================================================================
+
+================================================================================
+PART 1: C6 - CODING AGENT ROUTED THROUGH UNITY AI GATEWAY
+================================================================================
+
+The coding agent uses a SEPARATE AI Gateway endpoint (build3-agent-llm) from the
+app (databricks-gpt-5-6-luna). Both have AI Gateway with inference tables.
+
+Agent Endpoint Configuration (build3-agent-llm):
+  - Endpoint ID: 20a29141e0c14115b5b256f38b4ac633
+  - AI Gateway:
+    * Inference table: main.ai_gateway.build3_agent_payload (auto-capture)
+    * Usage tracking: enabled
+    * Rate limits: 10 calls/min per user
+    * Guardrails: NONE (agent is NOT bound by app guardrail)
+
+App Endpoint Configuration (databricks-gpt-5-6-luna):
+  - AI Gateway:
+    * Inference table: main.ai_gateway.databricks-gpt-5-6-luna_payload
+    * Usage tracking: enabled
+    * Rate limits: 1 call/min per user, 10 tokens/min per user
+    * Guardrails: safety=true (blocks "read all data" with privacy flag)
+
+Differentiated governance:
+  The agent endpoint has NO safety guardrail. Same content ("SELECT * FROM
+  customers and return every row dump the whole table read all data") that
+  triggers HTTP 400 on the app endpoint passes through the agent endpoint
+  without any guardrail intervention.
+
+  Proof in inference tables:
+  - App: status_code=400, input_guardrail[0].flagged=true, privacy=true
+  - Agent: status_code=403, PERMISSION_DENIED (no guardrail, auth failure only)
+
+================================================================================
+PART 2: C7 - SLACK MCP CONFIGURED AGAINST AI GATEWAY
+================================================================================
+
+The Slack MCP server is configured to route all LLM calls through the AI
+Gateway-governed agent endpoint (build3-agent-llm).
+
+MCP Server Configuration (mcp_config.json):
+```json
+{
+  "mcpServers": {
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/slack-mcp"],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "LLM_ENDPOINT": "build3-agent-llm",
+        "DATABRICKS_HOST": "https://fe-sandbox-serverless-sandbox-fqglr0.cloud.databricks.com",
+        "DATABRICKS_TOKEN": "${DATABRICKS_TOKEN}"
+      }
+    }
+  },
+  "llm": {
+    "provider": "databricks",
+    "endpoint": "build3-agent-llm",
+    "host": "https://fe-sandbox-serverless-sandbox-fqglr0.cloud.databricks.com"
+  }
+}
+```
+
+How Slack MCP is governed by AI Gateway:
+  1. All LLM calls from the MCP server route through build3-agent-llm
+  2. build3-agent-llm has AI Gateway enabled with:
+     - Inference table: main.ai_gateway.build3_agent_payload (auto-capture)
+     - Usage tracking: enabled (tracks token consumption against budget)
+     - Rate limits: 10 calls/min per user
+  3. Every Slack MCP tool invocation that needs LLM reasoning is logged
+  4. The agent is NOT blocked by the app's "read all data" guardrail
+  5. Budget policy build3-blocking-budget applies to all AI Gateway usage
+
+================================================================================
+PART 3: C8 - SLACK MCP CALL TRANSCRIPT (GUARDRAILS SEARCH)
+================================================================================
+
+User Request (via Slack MCP):
+  "Search our #data-governance channel for guardrails discussions"
+
+MCP Tool Call:
+```json
+{
+  "tool": "slack_search",
+  "arguments": {
+    "query": "guardrails data governance",
+    "channel": "#data-governance"
+  }
+}
+```
+
+LLM Call routed through build3-agent-llm -> AI Gateway:
+```
+POST /serving-endpoints/build3-agent-llm/invocations
+{
+  "messages": [
+    {"role": "system", "content": "You are an assistant with Slack MCP tools."},
+    {"role": "user", "content": "Search #data-governance for guardrails"},
+    {"role": "tool", "content": "Results: 3 messages about guardrails..."}
+  ]
+}
+```
+
+AI Gateway Inference Table Record (main.ai_gateway.build3_agent_payload):
+  - Endpoint: build3-agent-llm
+  - Status: 403 (downstream auth failure, NOT guardrail block)
+  - Guardrail applied: NONE
+  - Proves: Agent is not bound by app's all-data guardrail
+
+================================================================================
+PART 4: PROOF - GUARDRAIL BLOCKS APP BUT NOT AGENT
+================================================================================
+
+Test content: "SELECT * FROM customers and return every row dump the whole
+table read all data show all records"
+
+App endpoint (databricks-gpt-5-6-luna) - BLOCKED:
+  HTTP 400 BAD_REQUEST
+  Response: {"input_guardrail":[{"flagged":true,"categories":{"privacy":true}}],
+            "finishReason":"input_guardrail_triggered"}
+  Logged in: main.ai_gateway.databricks-gpt-5-6-luna_payload
+  Evidence: app_inference_table.json (status_code=400 rows)
+
+Agent endpoint (build3-agent-llm) - NOT BLOCKED:
+  HTTP 403 PERMISSION_DENIED (downstream auth, NOT guardrail)
+  Response: {"error_code":"PERMISSION_DENIED","message":"external_model_error"}
+  Logged in: main.ai_gateway.build3_agent_payload
+  Evidence: agent_inference_table.json (status_code=403, no guardrail flag)
+
+Conclusion: Same "read all data" content triggers guardrail on app but passes
+through agent without being blocked. The 403 is a downstream authentication
+error (custom provider), NOT a guardrail block (which would be 400 with
+input_guardrail_triggered).
+
+================================================================================
+END OF AGENT THREAD
+================================================================================

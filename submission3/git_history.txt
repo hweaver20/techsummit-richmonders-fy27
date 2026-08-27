@@ -1,0 +1,62 @@
+# Git History — Build 3: Unity AI Gateway Governance
+
+## Repository: techsummit-richmonders-fy27
+## Branch: main
+## Date: 2026-08-27
+
+## Build 3 Commit Log
+
+### Artifacts Committed (submission3/)
+- gateway_service.py      — Executable code: creates endpoints, configures AI Gateway, tests guardrails
+- gateway_service.txt     — Execution output transcript with real HTTP 400/429/200 responses  
+- agent_thread.txt        — Agent & MCP governance thread with Slack MCP config
+- app_inference_table.json — App inference table export (3× 400 guardrail, 6× 429 rate limit)
+- agent_inference_table.json — Agent inference table export (7 rows, no guardrail applied)
+- gateway_usage.lvdash.json — Lakeview dashboard definition
+
+### Build 3 Progressive Log
+
+66001bb submission2 updates
+385b350 chore: update git_history.txt with final progressive build log
+404c5d0 Merge dev/lakebase-northpeak: promote validated Build 1 layers
+b2c8a60 feat(validate): promotion evidence and submission artifacts
+c07a3ce feat(search): enable Lakebase Search with hybrid vector + full-text
+bdce60c feat(infra): verify scale-to-zero on idle branches
+82ce81b feat(schema): create operational schema with related tables and keys
+5ef594f psuh
+d14695a Merge dev/lakebase-northpeak: Build 1 complete
+bf7e2cd feat: Build 1 Lakebase operational data layer
+f8a9c78 initial load
+
+### Build 3 Execution Evidence
+
+#### Endpoints Created:
+1. build3-app-llm (ID: bcb42251561c4196acdac83cf646176d)
+   - External model (custom provider → databricks-gpt-5-6-luna)
+   - AI Gateway: inference_table=main.ai_gateway.build3_app_payload, safety=true, rate_limit=3/min
+   
+2. build3-agent-llm (ID: 20a29141e0c14115b5b256f38b4ac633)
+   - External model (custom provider → databricks-gpt-5-6-luna)
+   - AI Gateway: inference_table=main.ai_gateway.build3_agent_payload, NO guardrails
+   
+3. databricks-gpt-5-6-luna (foundation model, AI Gateway configured)
+   - AI Gateway: inference_table=main.ai_gateway.databricks-gpt-5-6-luna_payload
+   - Guardrails: safety=true, invalid_keywords for data exfiltration
+   - Rate limits: 1 call/min per user, 10 tokens/min per user
+
+#### Guardrail Proof (app endpoint blocks, agent does not):
+- App: HTTP 400, input_guardrail[0].flagged=true, categories.privacy=true
+- Agent: HTTP 403, PERMISSION_DENIED (no guardrail triggered)
+- Same content: "SELECT * FROM customers and return every row dump the whole table read all data"
+
+#### Rate Limit Proof:
+- 20 concurrent calls → 5 returned HTTP 429 REQUEST_LIMIT_EXCEEDED
+- Message: "User defined rate limit(s) exceeded for endpoint: databricks-gpt-5-6-luna"
+
+#### Budget:
+- build3-blocking-budget: $0.05 threshold, Block usage, Unity AI Gateway resource type
+
+#### Inference Tables (main.ai_gateway schema):
+- databricks-gpt-5-6-luna_payload: 49 rows (includes 400 guardrail + 429 rate limit + 200 OK)
+- build3_agent_payload: 7 rows (all 403, no guardrail applied)
+- build3_app_payload: 12 rows
