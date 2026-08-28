@@ -17,3 +17,20 @@ Changes done on dev branch:
 3. Promoted to production branch after validation passed
 
 Branch kept alive (no_expiry=True) for Build 2.
+
+---
+Throwaway Forecasting Branch:
+  Name: projects/northpeak/branches/forecast-cold-snap
+  Source: projects/northpeak/branches/production (copy-on-write)
+  TTL: 4 hours (Duration(seconds=14400)) — auto-expires
+  Endpoint: ep-jolly-breeze-d2c44ucy.database.us-east-1.cloud.databricks.com
+
+Usage:
+  1. Created throwaway branch for cold-snap demand forecast scenario
+  2. Connected and ran 2x demand multiplier query for North zone cold_weather products
+  3. Identified 10 stores projected to stockout within 5 days
+  4. Deleted branch after forecast complete — production unchanged
+
+Both branch patterns demonstrated:
+  - dev (permanent, no_expiry): iterative schema development + promotion to main
+  - forecast-cold-snap (throwaway, TTL=4h): one-off scenario analysis, then discard

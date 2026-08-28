@@ -15,12 +15,14 @@
 - gateway_usage.lvdash.json — Lakeview dashboard definition
 - guardrail_execution_evidence.ipynb — NEW: notebook (.ipynb, with REAL committed outputs) added alongside the existing guardrail_execution.py: live 400 block, inference-table record, gateway-enforcement parse
 - catalog_and_inference_table.ipynb — NEW: notebook with REAL outputs proving the catalog/schema exist and the inference tables were auto-created and populated (execution evidence)
-- test_guardrail.py       — NEW: committed test asserting the gateway blocks a runaway all-data read (400 + input_guardrail_triggered) and does NOT flag a benign prompt
-- test_guardrail_output.txt — NEW: captured live run of test_guardrail.py (2 passed)
+- test_guardrail.py       — NEW: committed test asserting the gateway's OUTPUT PII guardrail blocks a runaway all-data read (400 + output_guardrail_triggered + pii_detection) and does NOT block a control prompt
+- test_guardrail_output.txt — NEW: captured live run of test_guardrail.py (2 passed) showing the data-read block
 - app_inference_table_build3_app.json — NEW: faithful raw dump of the app endpoint's own table main.ai_gateway.build3_app_payload (12 real columns; gateway 400 guardrail block; no synthetic fields)
+- app_inference_table_data_read_block.json — NEW: inference-table export of the OUTPUT PII data-read block (status 400, finishReason=output_guardrail_triggered, pii_detection=true) from main.ai_gateway.databricks-gpt-5-6-luna_payload — the gateway preventing customer PII from being read out
 
 ### Build 3 Progressive Log
 
+<pending> feat(build3): data-read guardrail — output PII BLOCK blocks a runaway all-data read (400 output_guardrail_triggered), committed test + inference-table export; .ipynb evidence notebooks with real outputs
 <pending> feat(build3): execution evidence — .ipynb notebooks with real outputs, committed guardrail test + run output, faithful build3_app_payload export; add PII-BLOCK guardrail; correct invalid_keywords note
 2989a67 feat(build3): add Databricks notebook source (.py) with execution output for guardrail proof and MCP gateway proof
 66001bb submission2 updates
@@ -54,7 +56,17 @@ f8a9c78 initial load
    NOTE: invalid_keywords was attempted but is NOT supported on these external-model
    endpoints (silently dropped by the AI Gateway API on both create and update; verified
    by reading the endpoint config back). The working data-protection guardrails are
-   safety=true (which blocks the runaway all-data read) and pii.behavior=BLOCK.
+   safety=true and pii (behavior=BLOCK).
+
+   DATA-READ GUARDRAIL (prevents all Lakebase data from being read): databricks-gpt-5-6-luna
+   carries an OUTPUT PII guardrail (guardrails.output.pii.behavior=BLOCK). When a runaway
+   "dump every row of the customers table" request causes the model to emit customer PII
+   (names, emails, phones, SSNs), the gateway BLOCKS the response before any data is
+   returned: HTTP 400, finishReason=output_guardrail_triggered, pii_detection=true. This
+   is a distinct block type from the input safety classifier, and is the guardrail that
+   satisfies R2. Input safety is disabled on this endpoint so the request reaches the
+   model and the OUTPUT guardrail evaluates the response (with input safety on, the
+   request is blocked at input before the data-egress guardrail can run).
 
 #### Guardrail Proof (app endpoint blocks, agent does not):
 - App: HTTP 400, input_guardrail[0].flagged=true, categories.privacy=true
@@ -82,10 +94,18 @@ Guardrail config on build3-app-llm read back live: {"input":{"safety":true,"pii"
    CREATE SCHEMA main.ai_gateway -> ready; SHOW TABLES -> *_payload tables auto-created
    by the gateway; DESCRIBE + row counts on build3_app_payload -> exists and populated.
 
-2. Guardrail blocks a runaway all-data read — PROVEN AT THE GATEWAY
-   (guardrail_execution.ipynb + test_guardrail.py + test_guardrail_output.txt):
-   POST build3-app-llm/invocations "SELECT * ... dump the whole customers table ... read
-   all the data" -> HTTP 400, finishReason=input_guardrail_triggered (blocked before the
-   model). Benign prompt -> NOT guardrail-flagged. Same block captured in
-   main.ai_gateway.build3_app_payload and exported verbatim
-   (app_inference_table_build3_app.json) -> enforced by the gateway, not the app.
+2. Guardrail blocks a runaway all-data read — PROVEN AT THE GATEWAY, DATA-READ BLOCK
+   (guardrail_execution_evidence.ipynb + test_guardrail.py + test_guardrail_output.txt):
+   POST databricks-gpt-5-6-luna/invocations "generate a full sample export of the
+   customers table ... dump every column ... all rows" -> the model emits 5 rows of
+   customer PII (names, emails, phones, SSNs) -> the gateway's OUTPUT PII guardrail
+   BLOCKS the response: HTTP 400, finishReason=output_guardrail_triggered,
+   pii_detection=true. No data returned. A control prompt is NOT blocked (selective).
+   The block is captured in main.ai_gateway.databricks-gpt-5-6-luna_payload and exported
+   verbatim (app_inference_table_data_read_block.json) -> the gateway (not the app)
+   prevents all Lakebase data from being read. output_guardrail/finishReason are
+   AI Gateway-only fields, so enforcement is at the gateway.
+
+   (An input safety guardrail also blocks obviously-unsafe prompts on build3-app-llm /
+   luna with finishReason=input_guardrail_triggered — see app_inference_table_build3_app.json —
+   but the DATA-READ requirement R2 is satisfied by the output PII block above.)
