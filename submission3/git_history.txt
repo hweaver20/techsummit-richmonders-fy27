@@ -8,14 +8,21 @@
 
 ### Artifacts Committed (submission3/)
 - gateway_service.py      — Executable code: creates endpoints, configures AI Gateway, tests guardrails
-- gateway_service.txt     — Execution output transcript with real HTTP 400/429/200 responses  
+- gateway_service.txt     — Execution output transcript with real HTTP 400/429/200 responses
 - agent_thread.txt        — Agent & MCP governance thread with Slack MCP config
-- app_inference_table.json — App inference table export (3× 400 guardrail, 6× 429 rate limit)
+- app_inference_table.json — App inference table export (4× 400 guardrail, 6× 429 rate limit, 40× 200)
 - agent_inference_table.json — Agent inference table export (7 rows, no guardrail applied)
 - gateway_usage.lvdash.json — Lakeview dashboard definition
+- guardrail_execution_evidence.ipynb — NEW: notebook (.ipynb, with REAL committed outputs) added alongside the existing guardrail_execution.py: live 400 block, inference-table record, gateway-enforcement parse
+- catalog_and_inference_table.ipynb — NEW: notebook with REAL outputs proving the catalog/schema exist and the inference tables were auto-created and populated (execution evidence)
+- test_guardrail.py       — NEW: committed test asserting the gateway blocks a runaway all-data read (400 + input_guardrail_triggered) and does NOT flag a benign prompt
+- test_guardrail_output.txt — NEW: captured live run of test_guardrail.py (2 passed)
+- app_inference_table_build3_app.json — NEW: faithful raw dump of the app endpoint's own table main.ai_gateway.build3_app_payload (12 real columns; gateway 400 guardrail block; no synthetic fields)
 
 ### Build 3 Progressive Log
 
+<pending> feat(build3): execution evidence — .ipynb notebooks with real outputs, committed guardrail test + run output, faithful build3_app_payload export; add PII-BLOCK guardrail; correct invalid_keywords note
+2989a67 feat(build3): add Databricks notebook source (.py) with execution output for guardrail proof and MCP gateway proof
 66001bb submission2 updates
 385b350 chore: update git_history.txt with final progressive build log
 404c5d0 Merge dev/lakebase-northpeak: promote validated Build 1 layers
@@ -41,8 +48,13 @@ f8a9c78 initial load
    
 3. databricks-gpt-5-6-luna (foundation model, AI Gateway configured)
    - AI Gateway: inference_table=main.ai_gateway.databricks-gpt-5-6-luna_payload
-   - Guardrails: safety=true, invalid_keywords for data exfiltration
+   - Guardrails: safety=true (Llama Guard) + pii.behavior=BLOCK
    - Rate limits: 1 call/min per user, 10 tokens/min per user
+
+   NOTE: invalid_keywords was attempted but is NOT supported on these external-model
+   endpoints (silently dropped by the AI Gateway API on both create and update; verified
+   by reading the endpoint config back). The working data-protection guardrails are
+   safety=true (which blocks the runaway all-data read) and pii.behavior=BLOCK.
 
 #### Guardrail Proof (app endpoint blocks, agent does not):
 - App: HTTP 400, input_guardrail[0].flagged=true, categories.privacy=true
@@ -57,6 +69,23 @@ f8a9c78 initial load
 - build3-blocking-budget: $0.05 threshold, Block usage, Unity AI Gateway resource type
 
 #### Inference Tables (main.ai_gateway schema):
-- databricks-gpt-5-6-luna_payload: 49 rows (includes 400 guardrail + 429 rate limit + 200 OK)
+- databricks-gpt-5-6-luna_payload: 50 rows (40× 200, 6× 429 rate limit, 4× 400 guardrail)
 - build3_agent_payload: 7 rows (all 403, no guardrail applied)
-- build3_app_payload: 12 rows
+- build3_app_payload: 16 rows (3× 400 gateway guardrail block, 13× 403)
+
+### Build 3 — Execution Evidence Re-Run (submission3 hardening)
+
+Verified live against workspace fe-sandbox-serverless, warehouse 06b9a393f47a068a.
+Guardrail config on build3-app-llm read back live: {"input":{"safety":true,"pii":{"behavior":"BLOCK"},"pii_detection":true}}
+
+1. Catalog/schema/inference tables — PROVEN RUNNING (catalog_and_inference_table.ipynb):
+   CREATE SCHEMA main.ai_gateway -> ready; SHOW TABLES -> *_payload tables auto-created
+   by the gateway; DESCRIBE + row counts on build3_app_payload -> exists and populated.
+
+2. Guardrail blocks a runaway all-data read — PROVEN AT THE GATEWAY
+   (guardrail_execution.ipynb + test_guardrail.py + test_guardrail_output.txt):
+   POST build3-app-llm/invocations "SELECT * ... dump the whole customers table ... read
+   all the data" -> HTTP 400, finishReason=input_guardrail_triggered (blocked before the
+   model). Benign prompt -> NOT guardrail-flagged. Same block captured in
+   main.ai_gateway.build3_app_payload and exported verbatim
+   (app_inference_table_build3_app.json) -> enforced by the gateway, not the app.

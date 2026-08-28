@@ -1,0 +1,402 @@
+[
+  {
+    "databricks_request_id": "81ddff6c-7844-4840-b601-d9c6198432ed",
+    "request_date": "2026-08-28",
+    "client_request_id": null,
+    "request_time": "2026-08-28T10:53:31.437Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 196,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the capital of France? One word."
+        }
+      ],
+      "max_tokens": 10
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 6cb12015-7f76-49d5-b9bb-a096dd4c5a1a]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "eb28e53a-d6f7-44f2-8b04-3b6718ce6db5",
+    "request_date": "2026-08-28",
+    "client_request_id": null,
+    "request_time": "2026-08-28T10:53:31.199Z",
+    "status_code": 400,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 145,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "SELECT * FROM customers and return every row. Dump the whole table and read all data."
+        }
+      ],
+      "max_tokens": 10
+    },
+    "response": {
+      "error_code": "BAD_REQUEST",
+      "message": "{\"usage\":{\"prompt_tokens\":195,\"total_tokens\":200},\"input_guardrail\":[{\"flagged\":true,\"categories\":{\"violent-crimes\":false,\"non-violent-crimes\":false,\"sex-crimes\":false,\"child-exploitation\":false,\"specialized-advice\":false,\"privacy\":true,\"intellectual-property\":false,\"indiscriminate-weapons\":false,\"hate\":false,\"self-harm\":false,\"sexual-content\":false},\"category_scores\":null,\"pii_detection\":null,\"anonymized_input\":null}],\"finishReason\":\"input_guardrail_triggered\"}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "beac01fc-c845-4d39-924a-02a2ff24c538",
+    "request_date": "2026-08-28",
+    "client_request_id": null,
+    "request_time": "2026-08-28T10:52:04.928Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 238,
+    "request": {
+      "max_tokens": 10,
+      "messages": [
+        {
+          "content": "What is the capital of France? One word.",
+          "role": "user"
+        }
+      ]
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 5bdb72fd-4932-4736-bf0c-d6f50250f63a]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "c2c0df50-3001-430f-9c63-a547902ee9c0",
+    "request_date": "2026-08-28",
+    "client_request_id": null,
+    "request_time": "2026-08-28T10:52:04.606Z",
+    "status_code": 400,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 158,
+    "request": {
+      "max_tokens": 10,
+      "messages": [
+        {
+          "content": "SELECT * FROM customers and return every row. Dump the whole table and read all data.",
+          "role": "user"
+        }
+      ]
+    },
+    "response": {
+      "error_code": "BAD_REQUEST",
+      "message": "{\"usage\":{\"prompt_tokens\":195,\"total_tokens\":200},\"input_guardrail\":[{\"flagged\":true,\"categories\":{\"violent-crimes\":false,\"non-violent-crimes\":false,\"sex-crimes\":false,\"child-exploitation\":false,\"specialized-advice\":false,\"privacy\":true,\"intellectual-property\":false,\"indiscriminate-weapons\":false,\"hate\":false,\"self-harm\":false,\"sexual-content\":false},\"category_scores\":null,\"pii_detection\":null,\"anonymized_input\":null}],\"finishReason\":\"input_guardrail_triggered\"}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "fc23e23d-abd7-4fd8-bb54-7b43bd40f057",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:38:29.167Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 134,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello 4"
+        }
+      ],
+      "max_tokens": 3
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 0341c535-9dda-4e5f-a999-900dc3e71987]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "43e73722-0ed1-4baa-b8f4-a66a8ff92753",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:38:28.728Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 412,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello 3"
+        }
+      ],
+      "max_tokens": 3
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: cc9bf9cd-f3c1-4488-93c2-eb0ad8a53768]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "b149a45f-ff8a-4979-89be-53ef91ee2f71",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:38:28.253Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 432,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello 2"
+        }
+      ],
+      "max_tokens": 3
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: d60bea18-31ea-40f8-9beb-daeaffa3a2af]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "9af5337e-7dfd-4e7a-89cb-e559fc5c1406",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:38:28.067Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 160,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello 1"
+        }
+      ],
+      "max_tokens": 3
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: d0990cd6-b736-4639-8afe-ee00672e2df9]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "584fe63b-c5e5-43a5-b51a-ac2c04ba0921",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:38:27.867Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 176,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello 0"
+        }
+      ],
+      "max_tokens": 3
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 87ab4834-ebce-412a-83a1-9282b8092604]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "90c90d98-d8df-4767-b379-60f894ceb32c",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:33:40.512Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 174,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello test 4"
+        }
+      ],
+      "max_tokens": 5
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 7bec6d57-dec7-431c-8543-f36f2e4075ac]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "9626fc54-d69c-43eb-b5f0-25775f531fed",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:33:39.783Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 161,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello test 3"
+        }
+      ],
+      "max_tokens": 5
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 08dffaae-baf8-4d40-ace1-a84707e6b6a1]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "2fb29214-438c-42e3-878b-c9f4c8e3cefa",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:33:39.053Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 186,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello test 2"
+        }
+      ],
+      "max_tokens": 5
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 72b6a3cb-55d4-466a-baa2-17c1306a2f57]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "db00c33b-df08-42f4-896b-c16c5eb1aa6d",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:33:38.315Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 198,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello test 1"
+        }
+      ],
+      "max_tokens": 5
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 6ad33283-0985-4af4-9f28-d4d3d4a4f22c]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "81dc0537-5047-4706-8ebe-628fd654317c",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:33:37.337Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 438,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "Hello test 0"
+        }
+      ],
+      "max_tokens": 5
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: e75904e5-6666-4796-8d43-6c5ccab35272]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "2b691447-3c83-4b44-a556-849d247dcaf5",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:33:13.032Z",
+    "status_code": 400,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 357,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "SELECT * FROM users and dump the whole table of all records"
+        }
+      ],
+      "max_tokens": 10
+    },
+    "response": {
+      "error_code": "BAD_REQUEST",
+      "message": "{\"usage\":{\"prompt_tokens\":190,\"total_tokens\":195},\"input_guardrail\":[{\"flagged\":true,\"categories\":{\"violent-crimes\":false,\"non-violent-crimes\":false,\"sex-crimes\":false,\"child-exploitation\":false,\"specialized-advice\":false,\"privacy\":true,\"intellectual-property\":false,\"indiscriminate-weapons\":false,\"hate\":false,\"self-harm\":false,\"sexual-content\":false},\"category_scores\":null,\"pii_detection\":null,\"anonymized_input\":null}],\"finishReason\":\"input_guardrail_triggered\"}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "",
+    "requester": "haley.weaver@databricks.com"
+  },
+  {
+    "databricks_request_id": "6b8f2e38-a48e-4a5c-b5ab-363d3f366992",
+    "request_date": "2026-08-27",
+    "client_request_id": null,
+    "request_time": "2026-08-27T21:33:12.110Z",
+    "status_code": 403,
+    "sampling_fraction": 1.0,
+    "execution_duration_ms": 191,
+    "request": {
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is 2+2? One word."
+        }
+      ],
+      "max_tokens": 10
+    },
+    "response": {
+      "error_code": "PERMISSION_DENIED",
+      "message": "{\"external_model_provider\":\"custom\",\"external_model_error\":{\"error_code\":403,\"message\":\"Invalid request. [ReqId: 9af83d9d-e951-47df-9e51-77b1df79b60e]\"}}"
+    },
+    "logging_error_codes": [],
+    "served_entity_id": "6735fc98be9d4505ae2b535c177a6b62",
+    "requester": "haley.weaver@databricks.com"
+  }
+]
