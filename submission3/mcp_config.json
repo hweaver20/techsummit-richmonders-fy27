@@ -1,0 +1,33 @@
+{
+  "mcpServers": {
+    "slack": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@anthropic/slack-mcp"
+      ],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      }
+    }
+  },
+  "llm": {
+    "provider": "databricks",
+    "endpoint": "build3-agent-llm",
+    "host": "https://fe-sandbox-serverless-sandbox-fqglr0.cloud.databricks.com",
+    "ai_gateway": {
+      "endpoint_name": "build3-agent-llm",
+      "inference_table": "main.ai_gateway.build3_agent_payload",
+      "usage_tracking": true,
+      "rate_limits": [
+        {
+          "calls": 10,
+          "renewal_period": "minute",
+          "key": "user"
+        }
+      ]
+    }
+  },
+  "_description": "Slack MCP is configured against the AI Gateway. All LLM calls from the MCP server route through the build3-agent-llm serving endpoint which has AI Gateway enabled with inference table auto-capture, usage tracking, and rate limits."
+}
